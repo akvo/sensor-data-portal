@@ -49,6 +49,9 @@ targets = {
     'ITAY/HAP/+' : ['influxdb_akvo:hap', 'log:info'],
 	}
 
+# Harvest Moon sensors
+[HM/+]
+targets = influxdb_akvo:harvestmoon
 
 [config:influxdb_akvo]
 host      = 'influx'
@@ -60,6 +63,6 @@ targets = {
                # measurement
     'hap'  : [ 'hap' ],
     'ssu'  : [ 'ssu' ],
-    'test' : [ 'test' ]
+    'test' : [ 'test' ],
+    'harvestmoon' : [ 'harvestmoon' ]
     }
-

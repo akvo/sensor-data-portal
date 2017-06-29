@@ -50,6 +50,40 @@ def split_hap_sum_for_influx(item, sensor_id):
 
     return pyl
 
+def split_harvestmoon_for_influx(item, deviceId):
+    pl = item.payload
+    tpc= "topic=" + item.data.topic
+
+    # the payload is JSON.not sure how to access it, but example... pseudo code
+
+    # Example JSON payload
+    # [{
+    #     "ts": 1496950007,
+    #     "sensor_type": "weight",
+    #     "value": 34,
+    #     "unit": "kg"
+    # }, {
+    #     "ts": 1496949999,
+    #     "sensor_type": "airflow",
+    #     "value": 0.34,
+    #     "unit": "m3/h"
+    # }, {
+    #     "ts": 1496949999,
+    #     "sensor_type": "sound_level",
+    #     "value": 70,
+    #     "unit": "dB"
+    # }]
+
+
+    json_object_payload = json.load(pl)
+
+    pyl = "%s,sensor_id=%s, type=harvest_moon " % (tpc,deviceId)
+    sub_type_counter = 1
+    for reading in json_object_payload
+        pyl = pyl + "sub_type%s=%s value%s=%s,unit%s=%s, ts%s=%s" % (sub_type_counter, object.sensor_type, sub_type_counter, object.value, sub_type_counter, object.unit, sub_type_counter, object.ts)
+        sub_type_counter++
+    pyl = pyl + " %s" % (object.ts)  # <- This is ugly and wrong. Need to check payload format
+    return pyl
         
 # item = {
 #    'service'       : 'string',       # name of handling service (`twitter`, `file`, ..)
@@ -94,6 +128,12 @@ def plugin(srv, item):
         topicArr = item.topic.split('/')
         deviceId = topicArr[2] if len(topicArr) > 2 else '-' 
         payload  = split_hap_sum_for_influx(item, deviceId)
+    elif item.target == "harvestmoon":
+        tag      = ""
+        # incoming topic branch name: HM/<device_id>
+        topicArr = item.topic.split('/')
+        deviceId = topicArr[1] if len(topicArr) > 1 else '-'
+        payload = split_harvestmoon_for_influx(item, deviceId)
     else:
         payload = " value="+item.payload
 
