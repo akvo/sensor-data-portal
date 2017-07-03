@@ -75,14 +75,14 @@ def split_harvestmoon_for_influx(item, deviceId):
     # }]
 
 
-    json_object_payload = json.load(pl)
+    json_object_payload = json.loads(pl)
 
-    pyl = "%s,sensor_id=%s, type=harvest_moon " % (tpc,deviceId)
+    pyl = "{0},sensor_id={1}, type=harvest_moon".format(tpc,deviceId)
     sub_type_counter = 1
-    for reading in json_object_payload
-        pyl = pyl + "sub_type%s=%s value%s=%s,unit%s=%s, ts%s=%s" % (sub_type_counter, object.sensor_type, sub_type_counter, object.value, sub_type_counter, object.unit, sub_type_counter, object.ts)
-        sub_type_counter++
-    pyl = pyl + " %s" % (object.ts)  # <- This is ugly and wrong. Need to check payload format
+    for reading in json_object_payload:
+        pyl += "sub_type{0}={1} value{2}={3},unit{4}={5}, ts{6}={7}".format(sub_type_counter, reading["sensor_type"], sub_type_counter, reading["value"], sub_type_counter, reading["unit"], sub_type_counter, reading["ts"])
+        sub_type_counter += 1
+    pyl += " {0}".format(reading["ts"])  # <- This is ugly and wrong. Need to check payload format
     return pyl
         
 # item = {
